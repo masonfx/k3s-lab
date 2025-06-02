@@ -1,0 +1,17 @@
+[OPTIONS]
+
+enable: 1
+log_level_in: info
+ndp: 0
+tcpflags: 1
+nf_conntrack_tcp_timeout_established: 7875
+protection_synflood: 1
+protection_synflood_burst: 1000
+protection_synflood_rate: 200
+
+[RULES]
+
+GROUP allow-icmp -i vmbr0
+GROUP allow-ssh -i vmbr0
+GROUP allow-pveproxy -i vmbr0
+GROUP allow-k8s-ext-apps -i vmbr0

@@ -1,0 +1,51 @@
+[OPTIONS]
+
+enable: 1
+
+[ALIASES]
+
+k8s-api 192.168.10.20
+
+[IPSET admins] # homelab admin IPs
+
+100.0.0.0/8 # tailscale clients
+192.168.1.0/24 # openvpn clients
+192.168.20.0/28 # internal clients
+
+[IPSET k8s-nodes]
+
+192.168.10.21 # ctrl-01
+192.168.10.22 # ctrl-02
+192.168.10.23 # ctrl-03
+192.168.10.31 # work-01
+192.168.10.32 # work-02
+192.168.10.33 # work-03
+
+[IPSET pve-hosts] # homelab pve servers
+
+192.168.10.11
+192.168.10.12
+192.168.10.13
+
+[group allow-icmp]
+
+OUT Ping(ACCEPT) -source +dc/pve-hosts -log nolog
+IN Ping(ACCEPT) -dest +dc/pve-hosts -log nolog
+
+[group allow-k8s-ext-apps] # ports and protocols required for k8s applications
+
+IN HTTPS(ACCEPT) -dest dc/k8s-api -log nolog
+IN ACCEPT -dest dc/k8s-api -p tcp -dport 6379 -log nolog # kubernetes api port
+
+[group allow-k8s-intranet] # transport required between k8s nodes
+
+IN ACCEPT -source +dc/k8s-nodes -dest +dc/k8s-nodes -p udp -dport 8472 -log nolog # cilium vxlan
+
+[group allow-pveproxy] # allow browsing to pveproxy web gui
+
+IN ACCEPT -source +dc/admins -dest +dc/pve-hosts -p tcp -dport 8006 -log nolog
+
+[group allow-ssh] # allow ssh to pve hosts
+
+IN SSH(ACCEPT) -source +dc/admins -dest +dc/pve-hosts -log nolog # allow admins to ssh to pve hosts
+IN SSH(ACCEPT) -source +dc/pve-hosts -dest +dc/pve-hosts -log nolog # allow pve hosts to ssh each other

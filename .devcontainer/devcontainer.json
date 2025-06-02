@@ -1,0 +1,46 @@
+{
+  "name": "CLI Toolbox Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "extensions.verifySignature": false
+      },
+      "extensions": [
+        "redhat.vscode-yaml",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "davidanson.vscode-markdownlint",
+        "golang.go",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "forwardPorts": [],
+  "postCreateCommand": "kubectl version --client",
+  "remoteUser": "1000",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh/id_rsa,target=/home/devfx/.ssh/id_rsa,type=bind,readonly",
+    "source=${localEnv:HOME}/.ssh/known_hosts,target=/home/devfx/.ssh/known_hosts,type=bind,readonly",
+    "source=${localEnv:HOME}/.kube/,target=/home/devfx/.kube,type=bind"
+  ],
+  "runArgs": [
+    "--dns=192.168.10.1",
+    "--add-host",
+    "pve1.dev.masonfox.me:192.168.10.11",
+    "--add-host",
+    "pve2.dev.masonfox.me:192.168.10.12",
+    "--add-host",
+    "pve3.dev.masonfox.me:192.168.10.13",
+    "--add-host",
+    "api.vextech.dev:192.168.10.20"
+  ]
+}
