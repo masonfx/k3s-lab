@@ -19,11 +19,20 @@ RUN curl -s https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/h
    && mv kustomize /usr/local/bin/ \
    && chmod +x /usr/local/bin/kustomize
 
+# ── Fetch latest Argo CD CLI ────────────────────────────────────────────────
+RUN curl -fsSL \
+   "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64" \
+   -o /usr/local/bin/argocd && \
+   chmod +x /usr/local/bin/argocd
+
 # Cilium CLI
 RUN CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt) \
    && curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-amd64.tar.gz \
    && tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin \
    && rm cilium-linux-amd64.tar.gz
+
+# ── Fetch latest Helm ─────────────────────────────────────────────────
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # Kubeconform
 RUN curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xvzf - \

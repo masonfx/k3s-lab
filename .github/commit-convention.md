@@ -1,44 +1,57 @@
-Minimum valid commit line
+# Conventional Commits Instructions
 
-fix(networking): correct DNS SRV lookup
+When making commits, follow these patterns:
 
-Feature with body
+## Format
 
-feat(k8s): add Cilium network policy support
+```
+<type>(<scope>): <description>
 
-- default deny-all ingress/egress
-- egress allow-list for kube-system
+[optional body]
 
-Breaking change (footer variant)
+[optional footer(s)]
+```
 
-refactor(tofu): rename output variables
+## Types
 
-BREAKING CHANGE: destroys and recreates all outputs; state import needed.
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Changes that don't affect the code's meaning
+- refactor: Code change that neither fixes a bug nor adds a feature
+- perf: Code change that improves performance
+- test: Adding missing tests or correcting existing tests
+- chore: Changes to build process or auxiliary tools
+- ci: Changes to CI configuration files and scripts
 
-Breaking change (shorthand !)
+## Scope
 
-feat!: switch authentication to JWT
+Optional, specifies the section of the codebase:
 
----
+- k8s
+- infra
+- apps
+- docs
+- tofu
+- monitoring
+- network
+- storage
 
-What NOT to do
+## Examples
 
-Omit the type or the colon. Example wrong: update: make things faster → ignored.
+```
+feat(k8s): add new monitoring stack
+fix(infra): correct network policy for cilium
+docs(monitoring): update architecture diagrams
+chore(deps): update helm chart versions
+```
 
-Capitalise type. Example wrong: Fix: → ignored (types are case-insensitive in the spec but release-please’s regex assumes lower-case).
+## Breaking Changes
 
-Forget the blank line before body or footer.
+Add BREAKING CHANGE: in the footer:
 
-Put a trailing period in the description.
+```
+feat(k8s): replace nginx ingress with cilium gateway api
 
----
-
-Why these rules matter
-
-release-please’s versioning engine (DefaultVersioningStrategy) maps exactly feat, fix, BREAKING CHANGE/! to minor, patch, major bumps.
-
-Every other type is only cosmetic unless you add ! or a BREAKING CHANGE footer.
-
-If a commit does not match the pattern ^(\w+)([\w\-]+)?(!)?:\s.+, release-please ignores it entirely.
-
-Follow this table and all commits will be parsed, changelogs will be rich, and semantic version bumps will be automatic.
+BREAKING CHANGE: removes nginx ingress controller in favor of cilium gateway API
+```

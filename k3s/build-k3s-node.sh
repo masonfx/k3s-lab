@@ -55,7 +55,7 @@ function configure_network() {
         return
     else
         echo "Configuring network settings..."
-        
+
         # Ensure k3snodes are present in /etc/hosts
         declare -A K3S_NODES=(
             [k3sserver01]="192.168.10.21"
@@ -239,13 +239,14 @@ advertise-port: 6443
 node-ip: "$BACKPLANE_IP"
 node-external-ip: "$IP_ADDRESS"
 node-taint:
-    - "k3s-controlplane=true:NoExecute"
     - "node-role.kubernetes.io/control-plane=true:NoSchedule"
 log: "/var/log/k3s.log"
 kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
 disable:
     - metrics-server
     - servicelb
+    - traefik
+    - coredns
 protect-kernel-defaults: true
 secrets-encryption: true
 agent-token: "MijyGqAIes2pMmR0dZXHsUalnIRPzW"
@@ -262,7 +263,7 @@ EOF
 
     elif [[ "$(hostname)" =~ ^k3sserver0[2-3]$ ]]; then
         read -p "Enter the K3S_TOKEN for this server (from k3sserver01:/var/lib/rancher/k3s/server/token): " K3S_TOKEN
-        
+
         # generate k3s configuration file
         cat <<EOF > /etc/rancher/k3s.config.d/config.yaml
 cluster-domain: "vextech.cluster.io"
@@ -276,13 +277,14 @@ advertise-port: 6443
 node-ip: "$BACKPLANE_IP"
 node-external-ip: "$IP_ADDRESS"
 node-taint:
-    - "k3s-controlplane=true:NoExecute"
     - "node-role.kubernetes.io/control-plane=true:NoSchedule"
 log: "/var/log/k3s.log"
 kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
 disable:
     - metrics-server
     - servicelb
+    - traefik
+    - coredns
 protect-kernel-defaults: true
 secrets-encryption: true
 agent-token: "MijyGqAIes2pMmR0dZXHsUalnIRPzW"
@@ -302,7 +304,7 @@ EOF
 
     elif [[ "$(hostname)" =~ ^k3sagent0[1-3]$ ]]; then
         read -p "Enter the K3S_TOKEN for this server (from k3sserver01:/var/lib/rancher/k3s/server/agent-token): " K3S_TOKEN
-        
+
         cat <<EOF > /etc/rancher/k3s.config.d/config.yaml
 flannel-iface: "ens19"
 node-ip: "$BACKPLANE_IP"
@@ -343,7 +345,7 @@ EOF
     delaycompress
 }
 EOF
-    
+
     echo "LAST_CONFIGURE_K3S_RUN=$(date '+%Y-%m-%d')" >> ./.k3s-build-status
     echo "K3s configuration complete."
 }
@@ -377,11 +379,11 @@ function main() {
 
     build_vars
     configure_network
-    
+
     apt_actions &> /dev/null
 
     configure_ssh
-    
+
     echo "System configuration complete."
 
     configure_k3s
