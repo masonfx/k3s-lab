@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard-tls
+  namespace: route
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: wildcard.vextech.dev-tls
+  routes:
+    - match: Host(`traefik.vextech.dev`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: basic-auth
+          namespace: route

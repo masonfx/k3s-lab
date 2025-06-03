@@ -1,0 +1,60 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: true
+
+api:
+  insecure: false
+  dashboard: true
+  disableDashboardAd: true
+
+log:
+  level: INFO  # ( DEBUG | INFO )
+
+providers:
+  kubernetesCRD: {}
+
+accessLog:
+  filePath: "/var/log/traefik.log"
+  format: json
+  filters:
+    statusCodes:
+      - "204-299"
+      - "400-599"
+  bufferingSize: 100
+  fields:
+    #defaultMode: keep
+    headers:
+      defaultMode: drop
+      names:
+        User-Agent: keep
+
+http:
+  serversTransports:
+    ignorecert:
+      insecureSkipVerify: true
+
+entrypoints:
+  web:
+    address: ':80'
+    http:
+      redirections:
+        entrypoint:
+          to: 'websecure'
+          scheme: 'https'
+  websecure:
+    address: ':443'
+    asDefault: true
+    forwardedHeaders:
+      trustedIPs:
+        - 127.0.0.1/32
+        - 172.16.8.0/29
+        - 172.19.0.0/24
+        - 100.0.0.0/8
+    proxyProtocol:
+      trustedIPs:
+        - 127.0.0.1/32
+        - 172.16.8.0/29
+        - 172.19.0.0/24
+        - 100.0.0.0/8
+    http3:
+      advertisedPort: 443

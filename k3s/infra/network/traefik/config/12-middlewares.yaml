@@ -1,0 +1,179 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: auth-headers
+  namespace: route
+spec:
+  headers:
+    accessControlAllowMethods:
+      - GET
+      - OPTIONS
+      - PUT
+    hostsProxyHeaders:
+      - X-Forwarded-Host
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow"
+      X-XSS-PROTECTION: "1, mode=block"
+      x-powered-by: ""
+      server: ""
+    stsIncludeSubdomains: true
+    stsSeconds: 31536000
+    stsPreload: true
+    forceSTSHeader: true
+    customFrameOptionsValue: "SAMEORIGIN"
+    accessControlMaxAge: 100
+    contentTypeNosniff: true
+    browserXssFilter: true
+    referrerPolicy: "same-origin"
+    frameDeny: true
+    permissionsPolicy: >-
+      accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), screen-wake-lock=(), sync-xhr=(), xr-spatial-tracking=(), interest-cohort=()
+    contentSecurityPolicy: >-
+      default-src 'none'; img-src 'self' https: data: blob: http://*.vextech.dev; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com/; style-src-attr 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.vextech.dev; worker-src 'self' blob:; connect-src 'self' https://*.vextech.dev http://*.vextech.dev; object-src 'none'; frame-ancestors 'self' *; base-uri 'self'; form-action 'self'; frame-src 'self' https://*.vextech.dev; media-src 'self'; font-src 'self' data:; manifest-src 'self'; require-trusted-types-for 'script'
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local-ipallowlist
+  namespace: route
+spec:
+  ipWhiteList:
+    sourceRange:
+      - 192.168.10.0/28
+      - 192.168.20.0/28
+      - 192.168.1.0/24
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: auth-ratelimit
+  namespace: route
+spec:
+  rateLimit:
+    average: 100
+    burst: 200
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: compress-auth
+  namespace: route
+spec:
+  compress: {}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-basicauth
+  namespace: route
+spec:
+  basicAuth:
+    secret: traefik-auth-secret
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jellyfin-mw
+  namespace: route
+spec:
+  headers:
+    accessControlAllowMethods:
+      - GET
+      - OPTIONS
+      - PUT
+    hostsProxyHeaders:
+      - X-Forwarded-Host
+    customResponseHeaders:
+      X-Robots-Tag: "noindex,nofollow,nosnippet,noarchive,notranslate,noimageindex"
+      X-XSS-PROTECTION: "1"
+      server: ""
+    stsIncludeSubdomains: true
+    stsSeconds: 31536000
+    stsPreload: true
+    forceSTSHeader: true
+    customFrameOptionsValue: "SAMEORIGIN"
+    accessControlMaxAge: 100
+    contentTypeNosniff: true
+    browserXssFilter: true
+    referrerPolicy: "same-origin"
+    frameDeny: true
+    permissionsPolicy: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()"
+    # Optional CSP below — uncomment if you decide to use it
+    # contentSecurityPolicy: >-
+    #   default-src 'none'; img-src 'self' https: data: blob:; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline' https://cdn.jsdelivr.net/gh/CTalvio/Ultrachromic/ https://ctalvio.github.io https://fonts.googleapis.com/; style-src-attr 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' blob: https://www.gstatic.com https://www.youtube.com; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; font-src 'self'; require-trusted-types-for 'script'
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: authelia
+#   namespace: route
+# spec:
+#   forwardAuth:
+#     address: http://authelia:9091/api/verify?rd=https://authelia.vextech.dev
+#     trustForwardHeader: true
+#     authResponseHeaders:
+#       - Remote-User
+#       - Remote-Groups
+#       - Remote-Email
+#       - Remote-Name
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: cloudflarewarp
+#   namespace: route
+# spec:
+#   plugin:
+#     cloudflarewarp:
+#       disableDefault: "false"
+#       trustip:
+#         - 10.0.0.0/8
+# ---
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: crowdsec-bouncer
+#   namespace: route
+# spec:
+#   plugin:
+#     bouncer:
+#       enabled: true
+#       logLevel: INFO
+#       updateIntervalSeconds: 60
+#       crowdsecMode: stream
+#       crowdsecAppsecEnabled: true
+#       crowdsecAppsecHost: crowdsec:7422
+#       crowdsecAppsecFailureBlock: true
+#       crowdsecAppsecUnreachableBlock: true
+#       crowdsecLapiKey: Nr04nF5h9QP7PS5tRNxOs3ia/ek8iOlKcAOpt8Gg1zM
+#       crowdsecLapiHost: crowdsec:8080
+#       crowdsecLapiScheme: http
+#       forwardedHeadersTrustedIPs:
+#         - 127.0.0.1/32
+#         - 172.16.8.0/29
+#         - 173.245.48.0/20
+#         - 103.21.244.0/22
+#         - 103.22.200.0/22
+#         - 103.31.4.0/22
+#         - 141.101.64.0/18
+#         - 108.162.192.0/18
+#         - 190.93.240.0/20
+#         - 188.114.96.0/20
+#         - 197.234.240.0/22
+#         - 198.41.128.0/17
+#         - 162.158.0.0/15
+#         - 104.16.0.0/13
+#         - 104.24.0.0/14
+#         - 172.64.0.0/13
+#         - 131.0.72.0/22
+#       clientTrustedIPs:
+#         - 192.168.10.0/28
+#         - 192.168.20.0/28
+#         - 192.168.1.2/32
+#         - 172.16.0.0/16
+#         - 10.0.0.0/16
+#       redisCacheEnabled: true
+#       redisCacheHost: redis:6379
+#       redisCachePassword: OdCdHrE94QXHxUgKayrQQeugIHMqwa1RQ
+#       redisCacheDatabase: "0"
+#       banHTMLFilePath: /ban.html

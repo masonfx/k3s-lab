@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: route
+
+resources:
+  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+  - 00-namespace.yaml
+  - 00-role.yaml
+  - 00-service-account.yaml
+  - 01-role-binding.yaml
+  - 02-deployment.yaml
+  - 02-services.yaml
+  - config/12-middlewares.yaml
+  - config/13-auth-chains.yaml
+  - config/14-tls-options.yaml
+  - 99-traefik-dashboard.ingressroute.yaml
+
+secretGenerator:
+  - name: traefik-auth-secret
+    files:
+      - secrets/users
+    options:
+      disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: traefik-static
+    files:
+      - traefik.yaml=config/11-traefik.yaml
+    options:
+      disableNameSuffixHash: true
