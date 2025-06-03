@@ -58,3 +58,12 @@ entrypoints:
         - 100.0.0.0/8
     http3:
       advertisedPort: 443
+
+# experimental:
+#   plugins:
+#     cloudflarewarp:
+#       moduleName: "github.com/BetterCorp/cloudflarewarp"
+#       version: "v1.3.3"
+#     bouncer:
+#       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+#       version: "v1.4.2"
