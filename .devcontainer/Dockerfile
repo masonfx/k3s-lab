@@ -38,3 +38,8 @@ RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | b
 RUN curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xvzf - \
    && mv kubeconform /usr/local/bin/ \
    && chmod +x /usr/local/bin/kubeconform
+
+# Cert-manager CLI
+RUN curl -fsSL -o cmctl https://github.com/cert-manager/cmctl/releases/latest/download/cmctl_linux_amd64 \
+   && chmod +x cmctl \
+   && mv cmctl /usr/local/bin/cmctl
