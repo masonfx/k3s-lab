@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: longhorn-default-resource
+  namespace: longhorn-system
+data:
+  default-resource.yaml: |
+    "backup-target": "nfs://192.168.10.5:/mnt/files/share/longhorn-backup"
+    "backupstore-poll-interval": "180"

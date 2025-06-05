@@ -1,0 +1,80 @@
+defaultSettings:
+  defaultDataPath: "/data/"
+  defaultReplicaCount: 2
+preUpgradeChecker:
+  jobEnabled: false
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 2
+  defaultFsType: ext4
+  reclaimPolicy: Retain
+ingress:
+  enabled: false
+# service:
+#   ui:
+#     type: ClusterIP
+# longhornManager:
+#   priorityClass: system-cluster-critical
+# longhornDriver:
+#   priorityClass: system-cluster-critical
+# metrics:
+#   serviceMonitor:
+#     enabled: true
+#     additionalLabels: {}
+#     annotations: {}
+#     interval: "30s" # Default scrape interval. Override if needed.
+#     scrapeTimeout: "10s" # Default scrape timeout for Prometheus metrics
+#     relabelings: []
+#     metricRelabelings: []
+csi:
+  attacherReplicaCount: 2
+  provisionerReplicaCount: 2
+  resizerReplicaCount: 2
+  snapshotterReplicaCount: 2
+  plugin:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  provisioner:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  attacher:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  resizer:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  snapshotter:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi

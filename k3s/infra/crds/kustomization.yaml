@@ -2,6 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  # - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  # - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
-  - github.com/metallb/metallb/config/crd?ref=v0.14.9
+  #- https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml # renovate: github-releases=kubernetes-sigs/gateway-api
+  # - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml # renovate: github-releases=kubernetes-sigs/gateway-api
+  # - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml # renovate: github-releases=kubernetes-sigs/gateway-api
+  # - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.3.0/config/crd/experimental/gateway.networking.k8s.io_tcproutes.yaml # renovate: github-releases=kubernetes-sigs/gateway-api
+  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+  - https://raw.githubusercontent.com/traefik/traefik/v3.4/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
+  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml
+  # - https://github.com/prometheus-operator/prometheus-operator/raw/main/bundle.yaml
