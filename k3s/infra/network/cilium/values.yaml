@@ -1,0 +1,113 @@
+kubeProxyReplacement: true
+
+k8sServiceHost: 192.168.10.21
+k8sServicePort: 6443
+securityContext:
+  capabilities:
+    ciliumAgent: [ CHOWN, KILL, NET_ADMIN, NET_RAW, IPC_LOCK, SYS_ADMIN, SYS_RESOURCE, DAC_OVERRIDE, FOWNER, SETGID, SETUID ]
+    cleanCiliumState: [ NET_ADMIN, SYS_ADMIN, SYS_RESOURCE ]
+
+cgroup:
+  autoMount:
+    enabled: false
+  hostRoot: /sys/fs/cgroup
+
+# https://docs.cilium.io/en/stable/network/concepts/ipam/
+ipam:
+  mode: kubernetes
+  multiPoolPreAllocation: ""
+
+# https://docs.cilium.io/en/stable/operations/performance/tuning/#ebpf-host-routing
+# bpf:
+#   hostLegacyRouting: true
+
+operator:
+  rollOutPods: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+# Roll out cilium agent pods automatically when ConfigMap is updated.
+rollOutCiliumPods: true
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# Increase rate limit when doing L2 announcements
+k8sClientRateLimit:
+  qps: 20
+  burst: 100
+
+l2announcements:
+  enabled: true
+
+externalIPs:
+  enabled: true
+
+enableCiliumEndpointSlice: true
+
+# ipv4NativeRoutingCIDR: "10.42.0.0/16"
+# enableIPv4: true
+# enableIPv4Masquerade: true
+# enableIPMasqAgent: false
+# routingMode: native
+# tunnelMode: ""
+# autoDirectNodeRoutes: true
+
+loadBalancer:
+  # https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#maglev-consistent-hashing
+  algorithm: maglev
+  #mode: dsr
+
+gatewayAPI:
+  enabled: true
+
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+    rollOutPods: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  ui:
+    enabled: true
+    rollOutPods: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+ingressController:
+  enabled: false
+  default: true
+  loadbalancerMode: shared
+  service:
+    annotations:
+      io.cilium/lb-ipam-ips: 192.168.10.99
+
+# mTLS
+authentication:
+  enabled: false
+  mutual:
+    spire:
+      enabled: false
+      install:
+        server:
+          dataStorage:
+            storageClass: cilium-spire-sc
