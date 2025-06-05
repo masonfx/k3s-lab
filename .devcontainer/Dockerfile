@@ -43,3 +43,10 @@ RUN curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeco
 RUN curl -fsSL -o cmctl https://github.com/cert-manager/cmctl/releases/latest/download/cmctl_linux_amd64 \
    && chmod +x cmctl \
    && mv cmctl /usr/local/bin/cmctl
+
+# Hubble cli
+RUN HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt) \
+   && HUBBLE_ARCH=amd64 \
+   && curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-${HUBBLE_ARCH}.tar.gz \
+   && tar xzvfC hubble-linux-${HUBBLE_ARCH}.tar.gz /usr/local/bin \
+   && rm hubble-linux-${HUBBLE_ARCH}.tar.gz

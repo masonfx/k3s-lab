@@ -1,8 +1,10 @@
 .idea
 charts/example
-**/infrastructure/**/charts
-**/applications/**/charts
+**/infra/**/charts
+**/apps/**/charts
 !*secret*.yaml
+**.archive**
+**whoami**
 
 .terraform
 output

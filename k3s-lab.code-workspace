@@ -54,7 +54,7 @@
 		// Terminal
 		"terminal.integrated.defaultProfile.linux": "bash",
 		"terminal.integrated.persistentSessionReviveProcess": "never",
-		//"github.copilot.selectedCompletionModel": "gpt-4o-copilot",
+		"github.copilot.selectedCompletionModel": "gpt-4o-copilot",
 		"github.copilot.chat.followUps": true,
 		"github.copilot.chat.edits.codesearch.enabled": true,
 		"github.copilot.chat.runCommand.enabled": true,
@@ -71,11 +71,12 @@
 		"github.copilot.chat.generateTests.codeLens": true,
 		"github.copilot.chat.languageContext.typescript.enabled": true,
 		"github.copilot.chat.codeGeneration.useInstructionFiles": true,
-		// "github.copilot.chat.codeGeneration.instructions": [
-		//   {
-		//     "file": ".github/copilot-instructions.md"
-		//   }
-		// ],
+		"github.copilot.chat.commitMessageGeneration.useInstructionFiles": true,
+		"github.copilot.chat.codeGeneration.instructions": [
+			{
+				"file": ".github/copilot-instructions.md"
+			}
+		],
 		// "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
 		//   {
 		//     "file": ".github/.copilot-pull-request-description-instructions.md"

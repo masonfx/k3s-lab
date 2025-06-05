@@ -119,18 +119,11 @@ function configure_network() {
 }
 
 function configure_ssh() {
-    if [[ -f ./.k3s-build-status ]]; then
-        LAST_RUN=$(grep '^LAST_CONFIGURE_SSH_RUN=' ./.k3s-build-status | cut -d'=' -f2-)
-        if [[ -n "$LAST_RUN" ]]; then
-            LAST_RUN_DATE=$(echo "$LAST_RUN" | cut -d' ' -f1)
-            TODAY=$(date '+%Y-%m-%d')
-            if [[ "$LAST_RUN_DATE" == "$TODAY" ]]; then
-                echo "SSH configuration already run today ($LAST_RUN). Skipping."
-                return
-            fi
-        fi
+    if [[ -f ./.k3s-build-status ]] && grep -q '^LAST_CONFIGURE_SSH_RUN=' ./.k3s-build-status; then
+        echo "SSH configuration already run. Skipping."
+        return
     fi
-    echo "SSH configuration was last run on $LAST_RUN. Proceeding with reconfiguration."
+    echo "SSH configuration has already run. Proceeding with reconfiguration."
 
     rm -rfd /home/mfx/.ssh /etc/ssh/ssh_host_*
     mkdir -p /home/mfx/.ssh
@@ -173,20 +166,14 @@ function configure_ssh() {
 function apt_actions() {
     apt update && apt upgrade -y
 
-    apt install curl -y
+    apt install curl open-iscsi parted -y
+    systemctl enable --now iscsid.service
 }
 
 function configure_k3s() {
-    if [[ -f ./.k3s-build-status ]]; then
-        LAST_RUN=$(grep '^LAST_CONFIGURE_K3S_RUN=' ./.k3s-build-status | cut -d'=' -f2-)
-        if [[ -n "$LAST_RUN" ]]; then
-            LAST_RUN_DATE=$(echo "$LAST_RUN" | cut -d' ' -f1)
-            TODAY=$(date '+%Y-%m-%d')
-            if [[ "$LAST_RUN_DATE" == "$TODAY" ]]; then
-                echo "K3s configuration already run today ($LAST_RUN). Skipping."
-                return
-            fi
-        fi
+    if [[ -f ./.k3s-build-status ]] && grep -q '^LAST_CONFIGURE_K3S_RUN=' ./.k3s-build-status; then
+        echo "K3s configuration already run. Skipping."
+        return
     fi
 
     # create necessary k3s configuration directories
@@ -226,30 +213,39 @@ EOF
     if [[ "$(hostname)" == "k3sserver01" ]]; then
         # generate k3s configuration file
         cat <<EOF > /etc/rancher/k3s.config.d/config.yaml
-# k3sserver01
-
-cluster-domain: "vextech.cluster.io"
 tls-san:
-    - "$HOSTNAME.vextech.dev"
-flannel-backend: host-gw
-flannel-iface: "ens19"
+  - "$HOSTNAME.vextech.dev"
+  - "$IP_ADDRESS"
+
 https-listen-port: 6443
 advertise-address: "$BACKPLANE_IP"
 advertise-port: 6443
 node-ip: "$BACKPLANE_IP"
 node-external-ip: "$IP_ADDRESS"
+flannel-backend: "none"
+
 node-taint:
-    - "node-role.kubernetes.io/control-plane=true:NoSchedule"
+  - "node-role.kubernetes.io/control-plane=true:NoSchedule"
+
 log: "/var/log/k3s.log"
+
 kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+
 disable:
-    - metrics-server
-    - servicelb
-    - traefik
-    - coredns
+  - metrics-server
+  - servicelb
+  - traefik
+  - flannel
+  - network-policy
+  - local-storage
+  - cloud-controller
+  - kube-proxy
+
 protect-kernel-defaults: true
 secrets-encryption: true
+
 agent-token: "MijyGqAIes2pMmR0dZXHsUalnIRPzW"
+
 cluster-init: true
 EOF
         ln -fs /etc/rancher/k3s.config.d/config.yaml /etc/rancher/k3s/config.yaml
@@ -264,30 +260,59 @@ EOF
     elif [[ "$(hostname)" =~ ^k3sserver0[2-3]$ ]]; then
         read -p "Enter the K3S_TOKEN for this server (from k3sserver01:/var/lib/rancher/k3s/server/token): " K3S_TOKEN
 
+        # building additional data location
+        if [ -b /dev/sdb1 ]; then
+            echo "/dev/sdb1 already exists, skipping partition and filesystem creation."
+        else
+            # Create a new GPT and one partition that fills the disk
+            parted --script /dev/sdb \
+                mklabel gpt \
+                mkpart primary ext4 0% 100%
+            mkfs.ext4 -L data /dev/sdb1
+            mkdir -p /data
+            UUID=$(blkid -s UUID -o value /dev/sdb1)
+            echo "UUID=$UUID /data ext4 defaults,noatime 0 2" >> /etc/fstab
+            systemctl daemon-reload
+            mount -a
+        fi
+
         # generate k3s configuration file
         cat <<EOF > /etc/rancher/k3s.config.d/config.yaml
 cluster-domain: "vextech.cluster.io"
+
 tls-san:
-    - "$HOSTNAME.vextech.dev"
-flannel-backend: host-gw
-flannel-iface: "ens19"
+  - "$HOSTNAME.vextech.dev"
+  - "$IP_ADDRESS"
+
 https-listen-port: 6443
 advertise-address: "$BACKPLANE_IP"
 advertise-port: 6443
 node-ip: "$BACKPLANE_IP"
 node-external-ip: "$IP_ADDRESS"
+flannel-backend: "none"
+
 node-taint:
-    - "node-role.kubernetes.io/control-plane=true:NoSchedule"
+  - "node-role.kubernetes.io/control-plane=true:NoSchedule"
+
 log: "/var/log/k3s.log"
+
 kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+
 disable:
-    - metrics-server
-    - servicelb
-    - traefik
-    - coredns
+  - metrics-server
+  - servicelb
+  - traefik
+  - flannel
+  - network-policy
+  - local-storage
+  - cloud-controller
+  - kube-proxy
+
 protect-kernel-defaults: true
 secrets-encryption: true
+
 agent-token: "MijyGqAIes2pMmR0dZXHsUalnIRPzW"
+
 server: "https://k3sserver01.vextech.dev:6443"
 token: "$K3S_TOKEN"
 EOF
@@ -306,13 +331,14 @@ EOF
         read -p "Enter the K3S_TOKEN for this server (from k3sserver01:/var/lib/rancher/k3s/server/agent-token): " K3S_TOKEN
 
         cat <<EOF > /etc/rancher/k3s.config.d/config.yaml
-flannel-iface: "ens19"
 node-ip: "$BACKPLANE_IP"
 node-external-ip: "$IP_ADDRESS"
 server: "https://k3sserver01.vextech.dev:6443"
 token: "$K3S_TOKEN"
+
 log: "/var/log/k3s.log"
 kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+
 protect-kernel-defaults: true
 EOF
         ln -fs /etc/rancher/k3s.config.d/config.yaml /etc/rancher/k3s/config.yaml
