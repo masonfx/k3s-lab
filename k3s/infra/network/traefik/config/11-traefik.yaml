@@ -11,7 +11,8 @@ log:
   level: INFO  # ( DEBUG | INFO )
 
 providers:
-  kubernetesCRD: {}
+  kubernetesCRD:
+    allowCrossNamespace: true
 
 accessLog:
   filePath: "/var/log/traefik.log"
@@ -46,24 +47,21 @@ entrypoints:
     asDefault: true
     forwardedHeaders:
       trustedIPs:
-        - 127.0.0.1/32
-        - 172.16.8.0/29
-        - 172.19.0.0/24
-        - 100.0.0.0/8
-    proxyProtocol:
-      trustedIPs:
-        - 127.0.0.1/32
-        - 172.16.8.0/29
-        - 172.19.0.0/24
-        - 100.0.0.0/8
+        - "192.168.0.0/16"       # home/LAN range
+        - "10.0.0.0/8"           # internal range
+        - "100.64.0.0/10"        # CGNAT if relevant
+        - "172.16.0.0/12"
+        - "127.0.0.1/32"         # loopback
+        - "173.245.48.0/20"      # Cloudflare IPs
+        - "103.21.244.0/22"      # Cloudflare IPs
     http3:
       advertisedPort: 443
 
-# experimental:
-#   plugins:
-#     cloudflarewarp:
-#       moduleName: "github.com/BetterCorp/cloudflarewarp"
-#       version: "v1.3.3"
+experimental:
+  plugins:
+    cloudflarewarp:
+      moduleName: "github.com/BetterCorp/cloudflarewarp"
+      version: "v1.3.3"
 #     bouncer:
 #       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
 #       version: "v1.4.2"

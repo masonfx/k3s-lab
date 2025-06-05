@@ -3,8 +3,12 @@ kind: Service
 metadata:
   name: traefik
   namespace: route
+  # annotations:
+  #   service.cilium.io/type: LoadBalancer
+  #   service.cilium.io/forwarding-mode: dsr
 spec:
-  type: LoadBalancer  # Use NodePort or ClusterIP if needed
+  type: LoadBalancer
+  # externalTrafficPolicy: Local
   selector:
     app: traefik
   ports:

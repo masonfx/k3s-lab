@@ -4,17 +4,19 @@ kind: Kustomization
 namespace: route
 
 resources:
-  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
   - 00-namespace.yaml
   - 00-role.yaml
   - 00-service-account.yaml
   - 01-role-binding.yaml
   - 02-deployment.yaml
   - 02-services.yaml
+  - 03-wildcard.vextech.dev.certificate.yaml
   - config/12-middlewares.yaml
   - config/13-auth-chains.yaml
   - config/14-tls-options.yaml
+  - config/14-tls-store.yaml
+  # - 99-tcproute.yaml
+  # - 99-httproute.yaml
   - 99-traefik-dashboard.ingressroute.yaml
 
 secretGenerator:

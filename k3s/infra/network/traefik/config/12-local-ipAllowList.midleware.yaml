@@ -1,0 +1,11 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local-ipallowlist
+  namespace: route
+spec:
+  ipWhiteList:
+    sourceRange:
+      - 192.168.10.0/28
+      - 192.168.20.0/28
+      - 192.168.1.0/24
