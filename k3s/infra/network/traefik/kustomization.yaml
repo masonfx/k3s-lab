@@ -15,16 +15,8 @@ resources:
   - config/13-auth-chains.yaml
   - config/14-tls-options.yaml
   - config/14-tls-store.yaml
-  # - 99-tcproute.yaml
-  # - 99-httproute.yaml
+  - basicauth-mw.externalsecret.yaml
   - 99-traefik-dashboard.ingressroute.yaml
-
-secretGenerator:
-  - name: traefik-auth-secret
-    files:
-      - secrets/users
-    options:
-      disableNameSuffixHash: true
 
 configMapGenerator:
   - name: traefik-static

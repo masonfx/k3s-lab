@@ -68,7 +68,7 @@ metadata:
   namespace: route
 spec:
   basicAuth:
-    secret: traefik-auth-secret
+    secret: traefik-basicauth-secret
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

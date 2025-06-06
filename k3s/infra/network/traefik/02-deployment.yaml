@@ -16,20 +16,12 @@ spec:
         app: traefik
     spec:
       serviceAccountName: traefik-ingress-controller
-      # tolerations:
-      #   - key: "node-role.kubernetes.io/control-plane"
-      #     operator: "Exists"
-      #     effect: "NoSchedule"
-      # nodeSelector:
-      #   node-role.kubernetes.io/control-plane: "true"
       containers:
         - name: traefik
           image: traefik:v3.4
           args:
             - --configFile=/etc/traefik/traefik.yaml
           ports:
-            # - name: web
-            #   containerPort: 80
             - name: websecure
               containerPort: 443
           resources:
