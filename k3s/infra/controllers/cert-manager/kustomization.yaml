@@ -5,6 +5,8 @@ resources:
   # - https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
   - 00-namespace.yaml
   - 01-letsencrypt.clusterissuer.yaml
+  - 01-bitwarden.clusterissuer.yaml
+  - cloudflare-api.externalsecret.yaml
 
 helmCharts:
   - name: cert-manager

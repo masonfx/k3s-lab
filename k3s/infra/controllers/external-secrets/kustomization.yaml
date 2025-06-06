@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: external-secrets
+resources:
+- 00-namespace.yaml
+- 00-role.yaml
+- 01-role-binding.yaml
+- 11-bitwarden-certificate.yaml
+- 12-bitwarden-store.yaml
+
+helmCharts:
+  - name: external-secrets
+    repo: https://charts.external-secrets.io
+    version: 0.17.0
+    releaseName: external-secrets
+    namespace: external-secrets
+    valuesFile: values.yaml
+
+# Create a Kubernetes secret for the Bitwarden API token.
+# This secret is used by the External Secrets operator to access Bitwarden.
+# Make sure to replace <your-token> with your actual Bitwarden API token.
+# kubectl create secret generic bitwarden-access-token \
+#   --namespace external-secrets \
+#   --from-literal=token=<your-token>
