@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: cloudflared
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+
+namespace: cloudflared
+
+resources:
+  - 00-namespace.yaml
+  - 02-daemonset.yaml
+  - tunnel.externalsecret.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: config
+    files:
+      - config.yaml
+    options:
+      annotations:
+        argocd.argoproj.io/sync-wave: "-2"

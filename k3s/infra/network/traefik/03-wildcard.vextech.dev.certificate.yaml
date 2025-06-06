@@ -14,6 +14,7 @@ spec:
   dnsNames:
     - "*.vextech.dev"
     - "vextech.dev"
+    - traefik.route.svc.kube.vextech.dev
   issuerRef:
     name: letsencrypt-issuer
     kind: ClusterIssuer

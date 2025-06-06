@@ -3,18 +3,15 @@ kind: Service
 metadata:
   name: traefik
   namespace: route
-  # annotations:
-  #   service.cilium.io/type: LoadBalancer
-  #   service.cilium.io/forwarding-mode: dsr
 spec:
   type: LoadBalancer
   # externalTrafficPolicy: Local
   selector:
     app: traefik
   ports:
-    - name: web
-      port: 80
-      targetPort: web
+    # - name: web
+    #   port: 80
+    #   targetPort: web
     - name: websecure
       port: 443
       targetPort: websecure

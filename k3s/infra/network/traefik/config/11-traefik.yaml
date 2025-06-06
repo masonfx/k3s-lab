@@ -35,13 +35,6 @@ http:
       insecureSkipVerify: true
 
 entrypoints:
-  web:
-    address: ':80'
-    http:
-      redirections:
-        entrypoint:
-          to: 'websecure'
-          scheme: 'https'
   websecure:
     address: ':443'
     asDefault: true
@@ -49,7 +42,7 @@ entrypoints:
       trustedIPs:
         - "192.168.0.0/16"       # home/LAN range
         - "10.0.0.0/8"           # internal range
-        - "100.64.0.0/10"        # CGNAT if relevant
+        - "100.0.0.0/8"          # tailscale range
         - "172.16.0.0/12"
         - "127.0.0.1/32"         # loopback
         - "173.245.48.0/20"      # Cloudflare IPs

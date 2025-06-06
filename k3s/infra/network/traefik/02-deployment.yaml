@@ -28,8 +28,8 @@ spec:
           args:
             - --configFile=/etc/traefik/traefik.yaml
           ports:
-            - name: web
-              containerPort: 80
+            # - name: web
+            #   containerPort: 80
             - name: websecure
               containerPort: 443
           resources:
