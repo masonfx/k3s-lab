@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus-tls
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`prometheus.vextech.dev`)
+    kind: Rule
+    services:
+    - name: kube-prometheus-stack-prometheus
+      port: 9090
+    middlewares:
+      - name: no-auth
+        namespace: monitoring
+  tls: {}
+
