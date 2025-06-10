@@ -1,7 +1,7 @@
 .idea
 charts/example
-**/infra/**/charts
-**/apps/**/charts
+**/infrastructure/**/charts
+**/applications/**/charts
 !*secret*.yaml
 **.archive**
 **whoami**
