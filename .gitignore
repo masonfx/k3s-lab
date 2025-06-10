@@ -2,6 +2,7 @@
 charts/example
 **/infrastructure/**/charts
 **/applications/**/charts
+**/monitoring/**/charts
 !*secret*.yaml
 **.archive**
 **whoami**
