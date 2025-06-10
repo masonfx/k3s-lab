@@ -13,9 +13,9 @@ spec:
       targetRevision: 73.2.0 # renovate: docker=ghcr.io/prometheus-community/charts/kube-prometheus-stack
       helm:
         valueFiles:
-          - '$values/k8s/infrastructure/monitoring/prometheus-stack/values.yaml'
+          - '$values/k3s/infrastructure/monitoring/prometheus-stack/values.yaml'
     - repoURL: https://github.com/masonfx/k3s-lab
-      targetRevision: main
+      targetRevision: HEAD
       ref: values
   destination:
     name: in-cluster

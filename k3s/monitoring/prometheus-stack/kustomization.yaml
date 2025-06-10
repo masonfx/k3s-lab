@@ -3,8 +3,9 @@ kind: Kustomization
 namespace: monitoring
 
 resources:
-  - 99-promtheus.ingressroute.yaml
+  - 99-prometheus.ingressroute.yaml
   - 99-grafana.ingressroute.yaml
+  - 99-alertmanager.ingressroute.yaml
 
 helmCharts:
   - name: kube-prometheus-stack

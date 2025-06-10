@@ -11,7 +11,7 @@ spec:
         repoURL: https://github.com/masonfx/k3s-lab
         revision: HEAD
         directories:
-          - path: monitoring/*
+          - path: k3s/monitoring/*
   template:
     metadata:
       name: '{{path.basename}}'
