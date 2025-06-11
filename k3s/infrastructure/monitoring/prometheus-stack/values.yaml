@@ -28,10 +28,6 @@ prometheus:
     # Disable the default ingress for prometheus
     ingress:
       enabled: false
-      # Scrape configs for other components will be added via ServiceMonitors
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
 
 prometheusOperator:
   admissionWebhooks:
@@ -48,9 +44,6 @@ prometheusOperator:
     limits:
       cpu: 200m
       memory: 256Mi
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
 
 #
 # Alertmanager Configuration
@@ -76,9 +69,6 @@ alertmanager:
         memory: 250Mi
     ingress:
       enabled: false
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
 
 grafana:
   enabled: true
@@ -142,9 +132,6 @@ grafana:
         datasource: Prometheus
   ingress:
     enabled: false
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
 
 #
 # Resource tuning for exporters
@@ -168,9 +155,6 @@ kube-state-metrics:
     limits:
       cpu: 200m
       memory: 256Mi
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
 
 kubelet:
   service:

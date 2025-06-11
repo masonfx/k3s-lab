@@ -1,33 +1,23 @@
-singleBinary:
-  enabled: true
-  replicas: 1
-  nodeSelector: {}
-
-# Set deployment mode explicitly
-deploymentMode: SingleBinary
-
-persistence:
-  enabled: true
-  size: 10Gi
-  storageClassName: longhorn # IMPORTANT: Match your StorageClass
-
-# Resource tuning for homelab
-resources:
-  requests:
-    cpu: 250m
-    memory: 256Mi
-  limits:
-    cpu: 1000m
-    memory: 1Gi
-
 loki:
-  auth_enabled: false
+  replicas: 1
+  # Use filesystem persistence, suitable for a single-node setup
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: longhorn # IMPORTANT: Match your StorageClass
+  # Resource tuning for homelab
+  resources:
+    requests:
+      cpu: 200m
+      memory: 300Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
   # Use a simple, single-binary deployment mode
   commonConfig:
     replication_factor: 1
   storage:
     type: 'filesystem'
-
 # Disable other components in the chart, we will manage them separately
 grafana:
   enabled: false
@@ -38,10 +28,51 @@ promtail:
 gateway:
   enabled: false
 
-# Ensure distributed components are disabled
-read:
-  enabled: false
-write:
-  enabled: false
-backend:
-  enabled: false
+
+# singleBinary:
+#   enabled: true
+#   replicas: 1
+#   nodeSelector: {}
+
+# # Set deployment mode explicitly
+# deploymentMode: SingleBinary
+
+# persistence:
+#   enabled: true
+#   size: 10Gi
+#   storageClassName: longhorn # IMPORTANT: Match your StorageClass
+
+# # Resource tuning for homelab
+# resources:
+#   requests:
+#     cpu: 250m
+#     memory: 256Mi
+#   limits:
+#     cpu: 1000m
+#     memory: 1Gi
+
+# loki:
+#   auth_enabled: false
+#   # Use a simple, single-binary deployment mode
+#   commonConfig:
+#     replication_factor: 1
+#   storage:
+#     type: 'filesystem'
+
+# # Disable other components in the chart, we will manage them separately
+# grafana:
+#   enabled: false
+# prometheus:
+#   enabled: false
+# promtail:
+#   enabled: false
+# gateway:
+#   enabled: false
+
+# # Ensure distributed components are disabled
+# read:
+#   enabled: false
+# write:
+#   enabled: false
+# backend:
+#   enabled: false
