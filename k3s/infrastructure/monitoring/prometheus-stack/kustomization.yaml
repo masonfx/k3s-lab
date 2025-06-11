@@ -3,15 +3,16 @@ kind: Kustomization
 namespace: monitoring
 
 resources:
-  - 99-prometheus.ingressroute.yaml
-  - 99-grafana.ingressroute.yaml
-  - 99-alertmanager.ingressroute.yaml
+  - https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.73.2/stripped-down-crds.yaml
+  - prometheus.ingress-route.yaml
+  - grafana.ingress-route.yaml
+  - alertmanager.ingress-route.yaml
 
 helmCharts:
   - name: kube-prometheus-stack
     repo: https://prometheus-community.github.io/helm-charts
-    version: 73.2.0 # renovate: docker=ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    releaseName: prometheus-stack
+    version: 72.6.2 # renovate: docker=ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    releaseName: kube-prometheus-stack
     namespace: monitoring
     valuesFile: values.yaml
-    includeCRDs: true
+    includeCRDs: false
