@@ -14,6 +14,6 @@ spec:
       port: 9093
     middlewares:
       - name: no-auth
-        namespace: monitoring
+        namespace: route
   tls: {}
 
