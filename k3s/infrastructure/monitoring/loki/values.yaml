@@ -2,6 +2,9 @@ singleBinary:
   enabled: true
   replicas: 1
 
+# Set deployment mode explicitly
+deploymentMode: SingleBinary
+
 persistence:
   enabled: true
   size: 10Gi
@@ -32,4 +35,12 @@ prometheus:
 promtail:
   enabled: false
 gateway:
+  enabled: false
+
+# Ensure distributed components are disabled
+read:
+  enabled: false
+write:
+  enabled: false
+backend:
   enabled: false
