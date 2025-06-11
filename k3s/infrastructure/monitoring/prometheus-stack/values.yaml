@@ -1,14 +1,108 @@
+global:
+  domain: vextech.dev
+
+#
+# Prometheus Configuration
+#
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    # Adjust retention and storage size for homelab use
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn # IMPORTANT: Match your StorageClass
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    # Resource limits tuned for a small cluster
+    resources:
+      requests:
+        cpu: 250m
+        memory: 750Mi
+      limits:
+        cpu: 1
+        memory: 1.5Gi
+    # Disable the default ingress for prometheus
+    ingress:
+      enabled: false
+      # Scrape configs for other components will be added via ServiceMonitors
+
+prometheusOperator:
+  admissionWebhooks:
+    enabled: true
+    patch:
+      enabled: true
+      # This forces the operator to wait for the webhook to be ready
+      # which prevents the "secret not found" mounting error.
+      priorityClassName: system-cluster-critical
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+#
+# Alertmanager Configuration
+#
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 1
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn # IMPORTANT: Match your StorageClass
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 200m
+        memory: 250Mi
+    ingress:
+      enabled: false
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
 grafana:
   enabled: true
   replicas: 1
   adminPassword: "admin" # CHANGE THIS default password
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: longhorn # IMPORTANT: Match your StorageClass
+    accessModes: ["ReadWriteOnce"]
+    size: 2Gi
   resources:
     requests:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 100m
+      memory: 150Mi
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 300m
+      memory: 300Mi
+  # Add a more patient readiness probe to prevent the sidecar race condition
+  readinessProbe:
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+  # Pre-configure Loki datasource
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki.monitoring.svc.cluster.local:3100
+      jsonData:
+        maxLines: 1000
   # Pre-load dashboards from the community
   # These are sourced from grafana.com/grafana/dashboards/
   dashboardProviders:
@@ -40,62 +134,25 @@ grafana:
         gnetId: 10922
         revision: 23
         datasource: Prometheus
-
-kubelet:
-  enabled: false
-
-kubeStateMetrics:
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
-prometheusOperator:
-  admissionWebhooks:
-    enabled: true
-    patch:
-      enabled: true
-      # This forces the operator to wait for the webhook to be ready
-      # which prevents the "secret not found" mounting error.
-      priorityClassName: system-cluster-critical
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
-prometheus:
-  prometheusSpec:
-    replicas: 1
-    retention: 7d
-    resources:
-      requests:
-        cpu: 250m
-        memory: 750Mi
-      limits:
-        cpu: 1
-        memory: 1.5Gi
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
-
-alertmanager:
-  alertmanagerSpec:
-    replicas: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 100Mi
-    limits:
-      cpu: 200m
-      memory: 250Mi
   ingress:
     enabled: false
-  podDisruptionBudget:
-    enabled: true
-    minAvailable: 1
+
+#
+# Resource tuning for exporters
+#
+prometheus-node-exporter:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi

@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: controllers
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   description: Project for core infrastructure controllers
   sourceRepos:
