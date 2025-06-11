@@ -21,14 +21,17 @@ prometheus:
     resources:
       requests:
         cpu: 250m
-        memory: 750Mi
+        memory: 1024Mi
       limits:
-        cpu: 1
-        memory: 1.5Gi
+        cpu: 2
+        memory: 3Gi
     # Disable the default ingress for prometheus
     ingress:
       enabled: false
       # Scrape configs for other components will be added via ServiceMonitors
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
 
 prometheusOperator:
   admissionWebhooks:
@@ -45,6 +48,9 @@ prometheusOperator:
     limits:
       cpu: 200m
       memory: 256Mi
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
 
 #
 # Alertmanager Configuration
@@ -136,6 +142,9 @@ grafana:
         datasource: Prometheus
   ingress:
     enabled: false
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
 
 #
 # Resource tuning for exporters
@@ -148,6 +157,9 @@ prometheus-node-exporter:
     limits:
       cpu: 100m
       memory: 128Mi
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
 kube-state-metrics:
   resources:
     requests:
@@ -156,3 +168,20 @@ kube-state-metrics:
     limits:
       cpu: 200m
       memory: 256Mi
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+kubelet:
+  service:
+    enabled: true            # create exactly one Service
+    # give it the same label set as the built-in one
+    labels:
+      kubernetes.io/name: "Kubelet"
+  serviceMonitor:
+    # make sure we scrape only that service
+    selector:
+      matchLabels:
+        kubernetes.io/name: "Kubelet"
+    # tell Prometheus to key on "job", not "service", so label clashes vanish
+    jobLabel: "kubernetes.io/name"
