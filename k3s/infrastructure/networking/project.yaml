@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: network
+  namespace: argocd
+spec:
+  sourceRepos:
+    - 'https://github.com/masonfx/k3s-lab'
+    # - 'https://prometheus-community.github.io/helm-charts'
+    # - 'https://argoproj.github.io/argo-helm'
+  destinations:
+    - namespace: 'argocd'
+      server: https://kubernetes.default.svc
+    - namespace: 'cilium-secrets'
+      server: https://kubernetes.default.svc
+    - namespace: 'cloudflared'
+      server: https://kubernetes.default.svc
+    - namespace: 'route'
+      server: https://kubernetes.default.svc
+    - namespace: 'kube-system'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'

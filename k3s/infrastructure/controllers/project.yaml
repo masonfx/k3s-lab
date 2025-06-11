@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: monitoring
+  name: controllers
   namespace: argocd
 spec:
-  description: Monitoring tools project
+  description: Project for core infrastructure controllers
   sourceRepos:
-    - '*'
+    - 'https://github.com/masonfx/k3s-lab'
   destinations:
-    - namespace: monitoring
+    - namespace: 'argocd'
       server: https://kubernetes.default.svc
-    - namespace: argocd
+    - namespace: 'kube-system'
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
-  namespaceResourceWhitelist:
     - group: '*'
       kind: '*'

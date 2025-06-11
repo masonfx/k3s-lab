@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  namespace: argocd
+  name: infrastructure
+  labels:
+    app.kubernetes.io/part-of: infrastructure
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/masonfx/k3s-lab.git
+        revision: main
+        directories:
+          - path: k3s/infrastructure/controllers
+          - path: k3s/infrastructure/networking
+          - path: k3s/infrastructure/storage
+          - path: k3s/infrastructure/crds
+          - path: k3s/infrastructure/monitoring
+          # - path: k3s/infrastructure/deployment
+          # - path: k3s/infrastructure/auth
+          # - path: k3s/infrastructure/database
+  template:
+    metadata:
+      name: 'infra-{{ path.basename }}'
+      namespace: argocd
+      labels:
+        app.kubernetes.io/component: 'static-infrastructure'
+        app.kubernetes.io/part-of: infrastructure
+    spec:
+      project: infrastructure
+      source:
+        repoURL: https://github.com/masonfx/k3s-lab.git
+        targetRevision: main
+        path: '{{ path }}'
+        kustomize: {}  # Let Kustomize handle naming
+      destination:
+        namespace: infrastructure-system
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 1
+          backoff:
+            duration: 10s
+            factor: 2
+            maxDuration: 3m
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+          - PruneLast=true
+          - RespectIgnoreDifferences=true

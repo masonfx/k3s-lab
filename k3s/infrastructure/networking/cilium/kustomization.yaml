@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - l2announce.yaml
   - ip-pool.yaml
-  - 99-ingress-route.yaml
 
 helmCharts:
   - name: cilium
