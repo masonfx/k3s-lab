@@ -3,9 +3,9 @@ kind: Kustomization
 
 resources:
   # - https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.yaml
-  - 00-namespace.yaml
-  - 01-letsencrypt.clusterissuer.yaml
-  - 01-bitwarden.clusterissuer.yaml
+  - namespace.yaml
+  - letsencrypt.clusterissuer.yaml
+  - bitwarden.clusterissuer.yaml
   - cloudflare-api.externalsecret.yaml
 
 helmCharts:
@@ -17,4 +17,4 @@ helmCharts:
     valuesFile: values.yaml
 
 commonAnnotations:
-  argocd.argoproj.io/sync-wave: "-10"
+  argocd.argoproj.io/sync-wave: "-5"

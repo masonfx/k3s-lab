@@ -3,14 +3,12 @@ kind: Kustomization
 
 metadata:
   name: cloudflared
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
 
 namespace: cloudflared
 
 resources:
-  - 00-namespace.yaml
-  - 02-daemonset.yaml
+  - namespace.yaml
+  - daemonset.yaml
   - tunnel.externalsecret.yaml
 
 generatorOptions:
@@ -20,6 +18,6 @@ configMapGenerator:
   - name: config
     files:
       - config.yaml
-    options:
-      annotations:
-        argocd.argoproj.io/sync-wave: "-2"
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "0"

@@ -13,3 +13,6 @@ helmCharts:
     includeCRDs: true
     namespace: kube-system
     valuesFile: values.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "-9"

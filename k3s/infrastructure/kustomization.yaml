@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
 - project.yaml
-- application-set.yaml
+- infrastructure.appset.yaml
 - networking
 - storage
 - controllers

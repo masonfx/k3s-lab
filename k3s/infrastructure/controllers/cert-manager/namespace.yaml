@@ -3,3 +3,5 @@ kind: Namespace
 
 metadata:
   name: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"

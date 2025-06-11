@@ -2,9 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: longhorn-system
 resources:
-  - 00-namespace.yaml
-  - 11-recurring-job.yaml
-  - 99-ingress-route.yaml
+  - namespace.yaml
+  - recurring-job.yaml
+  - ingress-route.yaml
 
 helmCharts:
   - name: longhorn

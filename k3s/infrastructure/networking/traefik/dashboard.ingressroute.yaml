@@ -3,6 +3,8 @@ kind: IngressRoute
 metadata:
   name: traefik-dashboard-tls
   namespace: route
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   entryPoints:
     - websecure

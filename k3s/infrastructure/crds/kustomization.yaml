@@ -2,8 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 metadata:
   name: crds
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1" # Ensure CRDs are applied before other resources
 
 resources:
   - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
@@ -12,3 +10,6 @@ resources:
   - https://raw.githubusercontent.com/external-secrets/external-secrets/v0.17.0/deploy/crds/bundle.yaml # renovate: https://charts.external-secrets.io
   - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
   - https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "-10"

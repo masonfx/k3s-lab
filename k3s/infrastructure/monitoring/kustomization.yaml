@@ -3,6 +3,10 @@ kind: Kustomization
 resources:
 - namespace.yaml
 - project.yaml
+- monitoring.appset.yaml
 - hubble
 - prometheus-stack
 # - loki
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "1"

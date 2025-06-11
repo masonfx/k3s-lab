@@ -2,11 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: external-secrets
 resources:
-- 00-namespace.yaml
-- 00-role.yaml
-- 01-role-binding.yaml
-- 11-bitwarden-certificate.yaml
-- 12-bitwarden-store.yaml
+- namespace.yaml
+- role.yaml
+- role-binding.yaml
+- bitwarden-certificate.yaml
+- bitwarden-store.yaml
 
 helmCharts:
   - name: external-secrets
@@ -15,6 +15,9 @@ helmCharts:
     releaseName: external-secrets
     namespace: external-secrets
     valuesFile: values.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "-4"
 
 # Create a Kubernetes secret for the Bitwarden API token.
 # This secret is used by the External Secrets operator to access Bitwarden.

@@ -4,23 +4,26 @@ kind: Kustomization
 namespace: route
 
 resources:
-  - 00-namespace.yaml
-  - 00-role.yaml
-  - 00-service-account.yaml
-  - 01-role-binding.yaml
-  - 02-deployment.yaml
-  - 02-services.yaml
-  - 03-wildcard.vextech.dev.certificate.yaml
-  - config/12-middlewares.yaml
-  - config/13-auth-chains.yaml
-  - config/14-tls-options.yaml
-  - config/14-tls-store.yaml
+  - namespace.yaml
+  - role.yaml
+  - service-account.yaml
+  - role-binding.yaml
+  - deployment.yaml
+  - services.yaml
+  - wildcard.vextech.dev.certificate.yaml
+  - config/middlewares.yaml
+  - config/auth-chains.yaml
+  - config/tls-options.yaml
+  - config/tls-store.yaml
   - basicauth-mw.externalsecret.yaml
-  - 99-traefik-dashboard.ingressroute.yaml
+  - dashboard.ingressroute.yaml
 
 configMapGenerator:
   - name: traefik-static
     files:
-      - traefik.yaml=config/11-traefik.yaml
+      - traefik.yaml=config/traefik.yaml
     options:
       disableNameSuffixHash: true
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "0"

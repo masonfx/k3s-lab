@@ -11,4 +11,4 @@ helmCharts:
     valuesFile: values.yaml
 
 resources:
-  - 00-namespace.yaml
+  - namespace.yaml
