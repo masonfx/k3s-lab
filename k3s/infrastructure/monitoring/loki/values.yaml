@@ -1,6 +1,7 @@
 singleBinary:
   enabled: true
   replicas: 1
+  nodeSelector: {}
 
 # Set deployment mode explicitly
 deploymentMode: SingleBinary

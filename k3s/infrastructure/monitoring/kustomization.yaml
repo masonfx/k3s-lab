@@ -5,4 +5,4 @@ resources:
 - project.yaml
 - hubble
 - prometheus-stack
-- loki
+# - loki
