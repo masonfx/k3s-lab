@@ -92,13 +92,13 @@ grafana:
     initialDelaySeconds: 60
     timeoutSeconds: 30
   # Pre-configure Loki datasource
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      access: proxy
-      url: http://loki.monitoring.svc.cluster.local:3100
-      jsonData:
-        maxLines: 1000
+  # additionalDataSources:
+  #   - name: Loki
+  #     type: loki
+  #     access: proxy
+  #     url: http://loki.monitoring.svc.cluster.local:3100
+  #     jsonData:
+  #       maxLines: 1000
   # Pre-load dashboards from the community
   # These are sourced from grafana.com/grafana/dashboards/
   dashboardProviders:
