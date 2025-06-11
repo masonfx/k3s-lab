@@ -2,6 +2,8 @@ configs:
   cm:
     create: true
     application.resourceTrackingMethod: "annotation+label"
+    kustomize.buildOptions: "--enable-helm"
+    accounts.kubechecks: apiKey
   cmp:
     create: true
     plugins:
@@ -10,7 +12,26 @@ configs:
           command: [ "sh", "-c" ]
           args: [ "kustomize build --enable-helm" ]
   params:
+    controller.diff.server.side: true
     server.insecure: true
+  rbac:
+    create: true
+    policy.csv: |
+      g, ArgoCD Admins, role:admin
+      g, ArgoCD Viewers, role:readonly
+      g, ArgoCDAdmins, role:admin
+      g, ArgoCDViewers, role:readonly
+      g, argocd:admin, role:admin
+      g, argocd:read_all, role:readonly
+      p, role:kubechecks, applications, get,   */*, allow
+      p, role:kubechecks, applications, list,  */*, allow
+      p, role:kubechecks, applications, sync,  */*, allow
+      p, role:kubechecks, applications, create, */*, allow
+      p, role:kubechecks, applications, update, */*, allow
+      p, role:kubechecks, projects, get,       *, allow
+      p, role:kubechecks, projects, update,    *, allow
+      p, role:kubechecks, clusters, get, *, allow
+      g, kubechecks, role:kubechecks
 
 crds:
   install: true
@@ -21,19 +42,20 @@ controller:
   resources:
     requests:
       cpu: 100m
-      memory: 700Mi
+      memory: 512Mi
     limits:
-      cpu: 4000m
+      cpu: 500m
       memory: 2Gi
 
 dex:
+  enabled: true
   resources:
     requests:
-      cpu: 20m
-      memory: 64Mi
+      cpu: 10m
+      memory: 32Mi
     limits:
       cpu: 1000m
-      memory: 256Mi
+      memory: 128Mi
 
 redis:
   resources:
@@ -42,16 +64,18 @@ redis:
       memory: 64Mi
     limits:
       cpu: 2000m
-      memory: 128Mi
+      memory: 512Mi
 
 server:
+  extensions:
+    enabled: true
   resources:
     requests:
       cpu: 50m
       memory: 64Mi
     limits:
       cpu: 4000m
-      memory: 256Mi
+      memory: 512Mi
 
 repoServer:
   containerSecurityContext:
