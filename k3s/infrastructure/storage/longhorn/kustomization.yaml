@@ -16,7 +16,7 @@ helmCharts:
     includeCRDs: true
 
 patches:
-  - path: 11-backup.yaml
+  - path: backup.yaml
     target:
       kind: ConfigMap
       name: longhorn-default-resource
