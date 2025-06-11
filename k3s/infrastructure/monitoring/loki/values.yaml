@@ -13,11 +13,11 @@ loki:
     limits:
       cpu: 1000m
       memory: 1Gi
-  # Use a simple, single-binary deployment mode
-  commonConfig:
-    replication_factor: 1
-  storage:
-    type: 'filesystem'
+  # # Use a simple, single-binary deployment mode
+  # commonConfig:
+  #   replication_factor: 1
+  # storage:
+  #   type: 'filesystem'
 # Disable other components in the chart, we will manage them separately
 grafana:
   enabled: false
