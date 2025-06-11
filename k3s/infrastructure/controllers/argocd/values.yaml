@@ -3,7 +3,6 @@ configs:
     create: true
     application.resourceTrackingMethod: "annotation+label"
     kustomize.buildOptions: "--enable-helm"
-    accounts.kubechecks: apiKey
   cmp:
     create: true
     plugins:

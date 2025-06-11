@@ -9,6 +9,40 @@ grafana:
     limits:
       cpu: 500m
       memory: 512Mi
+  # Pre-load dashboards from the community
+  # These are sourced from grafana.com/grafana/dashboards/
+  dashboardProviders:
+    grafana-com-dashboards:
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: 'file'
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      # Node Exporter Full Dashboard
+      node-exporter:
+        gnetId: 1860
+        revision: 36
+        datasource: Prometheus
+      # Kubernetes Cluster Overview
+      k8s-cluster:
+        gnetId: 3119
+        revision: 24
+        datasource: Prometheus
+      # Cilium Dashboard
+      cilium:
+        gnetId: 10922
+        revision: 23
+        datasource: Prometheus
+
+kubelet:
+  enabled: false
 
 kubeStateMetrics:
   resources:
@@ -38,6 +72,7 @@ prometheusOperator:
 prometheus:
   prometheusSpec:
     replicas: 1
+    retention: 7d
     resources:
       requests:
         cpu: 250m
