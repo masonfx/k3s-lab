@@ -8,7 +8,7 @@ api:
   disableDashboardAd: true
 
 log:
-  level: INFO  # ( DEBUG | INFO )
+  level: DEBUG  # ( DEBUG | INFO )
 
 providers:
   kubernetesCRD:
@@ -16,18 +16,18 @@ providers:
 
 accessLog:
   filePath: "/var/log/traefik.log"
-  format: json
+  format: common
   filters:
     statusCodes:
       - "204-299"
       - "400-599"
   bufferingSize: 100
-  fields:
-    #defaultMode: keep
-    headers:
-      defaultMode: drop
-      names:
-        User-Agent: keep
+  # fields:
+  #   #defaultMode: keep
+  #   headers:
+  #     defaultMode: drop
+  #     names:
+  #       User-Agent: keep
 
 http:
   serversTransports:

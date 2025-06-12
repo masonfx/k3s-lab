@@ -1,29 +1,23 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 namespace: route
 
 resources:
-  - namespace.yaml
-  - role.yaml
-  - service-account.yaml
-  - role-binding.yaml
-  - deployment.yaml
-  - services.yaml
-  - wildcard.vextech.dev.certificate.yaml
+  # - namespace.yaml
+  # - wildcard.vextech.dev.certificate.yaml
   - config/middlewares.yaml
   - config/auth-chains.yaml
-  - config/tls-options.yaml
-  - config/tls-store.yaml
   - basicauth-mw.externalsecret.yaml
   - dashboard.ingressroute.yaml
 
-configMapGenerator:
-  - name: traefik-static
-    files:
-      - traefik.yaml=config/traefik.yaml
-    options:
-      disableNameSuffixHash: true
+helmCharts:
+- name: traefik
+  repo: https://traefik.github.io/charts
+  version: 36.1.0
+  releaseName: traefik
+  namespace: route
+  valuesFile: values.yaml
+  includeCRDs: true
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "0"
