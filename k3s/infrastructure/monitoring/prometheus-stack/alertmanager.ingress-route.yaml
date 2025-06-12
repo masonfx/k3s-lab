@@ -13,7 +13,7 @@ spec:
     - name: kube-prometheus-stack-alertmanager
       port: 9093
     middlewares:
-      - name: no-auth
+      - name: local-no-auth
         namespace: route
   tls: {}
 

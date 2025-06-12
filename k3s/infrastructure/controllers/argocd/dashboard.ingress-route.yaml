@@ -15,6 +15,6 @@ spec:
         - name: argocd-server
           port: 80
       middlewares:
-        - name: no-auth
+        - name: local-no-auth
           namespace: route
   tls: {}

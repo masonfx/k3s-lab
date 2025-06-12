@@ -13,7 +13,7 @@ spec:
     - name: kube-prometheus-stack-prometheus
       port: 9090
     middlewares:
-      - name: no-auth
+      - name: local-no-auth
         namespace: route
   tls: {}
 

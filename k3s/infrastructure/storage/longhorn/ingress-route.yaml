@@ -13,6 +13,6 @@ spec:
         - name: longhorn-frontend
           port: 80
       middlewares:
-        - name: no-auth
+        - name: local-no-auth
           namespace: route
   tls: {}

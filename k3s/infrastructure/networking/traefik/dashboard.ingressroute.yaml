@@ -17,5 +17,5 @@ spec:
         - name: api@internal
           kind: TraefikService
       middlewares:
-        - name: basic-auth
+        - name: traefik-basicauth
           namespace: route
