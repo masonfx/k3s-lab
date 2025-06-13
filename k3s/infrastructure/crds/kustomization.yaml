@@ -4,9 +4,7 @@ metadata:
   name: crds
 
 resources:
-  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-  - https://raw.githubusercontent.com/traefik/traefik/v3.2/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
-  - https://raw.githubusercontent.com/traefik/traefik/v3.4/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
+  - https://raw.githubusercontent.com/traefik/traefik/v3.4/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
   - https://raw.githubusercontent.com/external-secrets/external-secrets/v0.17.0/deploy/crds/bundle.yaml # renovate: https://charts.external-secrets.io
   - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
   - https://github.com/cert-manager/cert-manager/releases/download/v1.17.2/cert-manager.crds.yaml

@@ -92,7 +92,7 @@ experimental:
 deployment:
   enabled: true
   kind: Deployment # ( Deployment | Daemonset )
-  replicas: 1
+  replicas: 2
   podLabels:
     app: traefik
     homelab/ingress: "true"

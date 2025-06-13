@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: route
 
 resources:
-  # - namespace.yaml
-  # - wildcard.vextech.dev.certificate.yaml
+  - namespace.yaml
+  - wildcard.vextech.dev.certificate.yaml
   - config/middlewares.yaml
   - config/auth-chains.yaml
   - basicauth-mw.externalsecret.yaml

@@ -115,20 +115,21 @@ grafana:
             path: /var/lib/grafana/dashboards/default
   dashboards:
     default:
-      # Node Exporter Full Dashboard
       node-exporter:
         gnetId: 1860
         revision: 36
         datasource: Prometheus
-      # Kubernetes Cluster Overview
       k8s-cluster:
         gnetId: 3119
         revision: 24
         datasource: Prometheus
-      # Cilium Dashboard
       cilium:
         gnetId: 10922
         revision: 23
+        datasource: Prometheus
+      traefik:
+        gnetId: 17347
+        revision: 9
         datasource: Prometheus
   ingress:
     enabled: false
@@ -156,16 +157,15 @@ kube-state-metrics:
       cpu: 200m
       memory: 256Mi
 
-kubelet:
-  service:
-    enabled: true            # create exactly one Service
-    # give it the same label set as the built-in one
-    labels:
-      kubernetes.io/name: "Kubelet"
-  serviceMonitor:
-    # make sure we scrape only that service
-    selector:
-      matchLabels:
-        kubernetes.io/name: "Kubelet"
-    # tell Prometheus to key on "job", not "service", so label clashes vanish
-    jobLabel: "kubernetes.io/name"
+# kubelet:
+#   service:
+#     enabled: true
+#     labels:
+#       kubernetes.io/name: "Kubelet"
+#   serviceMonitor:
+#     # make sure we scrape only that service
+#     selector:
+#       matchLabels:
+#         kubernetes.io/name: "Kubelet"
+#     # tell Prometheus to key on "job", not "service", so label clashes vanish
+#     jobLabel: "kubernetes.io/name"
