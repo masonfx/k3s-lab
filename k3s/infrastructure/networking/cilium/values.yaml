@@ -89,6 +89,8 @@ hubble:
       limits:
         cpu: 200m
         memory: 256Mi
+    podLabels:
+      homelab/component: ui
 
 ingressController:
   enabled: false

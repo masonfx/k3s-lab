@@ -3,9 +3,8 @@ protocol: http2
 credentials-file: /etc/cloudflared/credentials/credentials.json
 metrics: 0.0.0.0:2000
 no-autoupdate: true
-# Enhanced logging configuration
-loglevel: debug # Increased log level for more details
-transport-loglevel: debug
+loglevel: info # Increased log level for more details
+transport-loglevel: info
 ingress:
   - hostname: "*.vextech.dev"
     service: https://traefik.route.svc.cluster.local:443

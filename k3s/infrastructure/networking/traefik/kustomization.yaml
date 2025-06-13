@@ -9,6 +9,7 @@ resources:
   - config/auth-chains.yaml
   - basicauth-mw.externalsecret.yaml
   - dashboard.ingressroute.yaml
+  - network-policy.yaml
 
 helmCharts:
 - name: traefik

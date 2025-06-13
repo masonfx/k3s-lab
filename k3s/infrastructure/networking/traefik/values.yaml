@@ -15,7 +15,7 @@ hub:
 
 logs:
   general:
-    level: "DEBUG"
+    level: "INFO"
   access:
     enabled: true
     filePath: "/data/traefik.log"
@@ -95,7 +95,7 @@ deployment:
   replicas: 2
   podLabels:
     app: traefik
-    homelab/ingress: "true"
+    app.kubernetes.io/component: ui
 
 service:
   enabled: true
@@ -105,8 +105,8 @@ service:
     traefik.io/external-lb: "true"
     k8s.io/ingress-controller: "true"
   annotations:
-    io.cilium/lb-ipam-ips: "from-pool"   # This tells Cilium to assign from the pool
-#   io.cilium/lb-ipam-ips: "192.168.254.10"
+    # io.cilium/lb-ipam-ips: "from-pool"   # This tells Cilium to assign from the pool randomly
+    io.cilium/lb-ipam-ips: "192.168.254.10" # this reserves a specific IP for Traefik
   spec:
     externalTrafficPolicy: Local
 

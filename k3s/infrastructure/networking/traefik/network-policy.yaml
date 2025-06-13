@@ -1,0 +1,74 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: traefik-ingress-egress
+  namespace: route
+spec:
+  endpointSelector:
+    matchLabels:
+      app: traefik
+  ingress:
+    - fromCIDRSet:
+        - cidr: 192.168.0.0/19
+      toPorts:
+        - ports:
+            - port: "8443"
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "8080"
+    - fromEndpoints:
+        - matchLabels:
+            app: cloudflared
+            io.kubernetes.pod.namespace: cloudflared
+      toPorts:
+        - ports:
+            - port: "8443"
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEntities:
+        - host
+      toPorts:
+        - ports:
+            - port: "6443"
+    - toEntities:
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "6443"
+    - toEndpoints:
+        - matchLabels:
+            homelab/component: ui
+          matchExpressions:
+            - key: io.kubernetes.pod.namespace
+              operator: Exists
+    - toEndpoints:
+        - matchLabels:
+            app: longhorn-ui
+            io.kubernetes.pod.namespace: longhorn-system
+      toPorts:
+        - ports:
+            - port: "8000"
+    - toEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: grafana
+            io.kubernetes.pod.namespace: monitoring
+      toPorts:
+        - ports:
+            - port: "3000"
+    - toFQDNs:
+        - matchPattern: "*.traefik.io"
+      toPorts:
+        - ports:
+            - port: "443"

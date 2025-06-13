@@ -166,7 +166,7 @@ function configure_ssh() {
 function apt_actions() {
     apt update && apt upgrade -y
 
-    apt install curl open-iscsi parted -y
+    apt install curl open-iscsi parted nfs-common -y
     systemctl enable --now iscsid.service
 }
 
@@ -229,7 +229,9 @@ node-taint:
 
 log: "/var/log/k3s.log"
 
-kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+kubelet-arg:
+  - "config=/etc/rancher/k3s/kubelet.config"
+  - "node-labels=bgp=65020"
 
 disable:
   - metrics-server
@@ -296,7 +298,9 @@ node-taint:
 
 log: "/var/log/k3s.log"
 
-kubelet-arg: "config=/etc/rancher/k3s/kubelet.config"
+kubelet-arg:
+  - "config=/etc/rancher/k3s/kubelet.config"
+  - "node-labels=bgp=65020"
 
 disable:
   - metrics-server

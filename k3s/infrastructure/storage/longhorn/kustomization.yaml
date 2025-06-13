@@ -2,22 +2,23 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: longhorn-system
 resources:
-  - namespace.yaml
-  - recurring-job.yaml
-  - ingress-route.yaml
+- namespace.yaml
+- recurring-job.yaml
+- ingress-route.yaml
 
 helmCharts:
-  - name: longhorn
-    repo: https://charts.longhorn.io
-    version: 1.9.0
-    releaseName: longhorn
-    namespace: longhorn-system
-    valuesFile: values.yaml
-    includeCRDs: true
+- includeCRDs: true
+  name: longhorn
+  namespace: longhorn-system
+  releaseName: longhorn
+  repo: https://charts.longhorn.io
+  valuesFile: values.yaml
+  version: 1.9.0
+
 
 patches:
-  - path: backup.yaml
-    target:
-      kind: ConfigMap
-      name: longhorn-default-resource
-      namespace: longhorn-system
+- path: backup.yaml
+  target:
+    kind: ConfigMap
+    name: longhorn-default-resource
+    namespace: longhorn-system

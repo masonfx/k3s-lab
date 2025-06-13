@@ -75,6 +75,8 @@ server:
     limits:
       cpu: 4000m
       memory: 512Mi
+  podLabels:
+    homelab/component: ui
 
 repoServer:
   containerSecurityContext:
