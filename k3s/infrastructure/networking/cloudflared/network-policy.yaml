@@ -8,19 +8,17 @@ spec:
     matchLabels:
       app: cloudflared
   ingress:
-    - {}
-  egress:
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
+    - fromEntities:
+        - host
       toPorts:
         - ports:
-            - port: "53"
-              protocol: UDP
-          rules:
-            dns:
-              - matchPattern: "*"
+            - port: "2000"
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "2000"
+  egress:
     - toEndpoints:
         - matchLabels:
             app: traefik
