@@ -1,0 +1,75 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp
+spec:
+  nodeSelector:
+    matchLabels:
+      bgp: "65020"
+  bgpInstances:
+    - name: "65020"
+      localASN: 65020
+      peers:
+        - name: "udm-se-65000"
+          peerASN: 65000
+          peerAddress: 192.168.10.1
+          peerConfigRef:
+            name: "cilium-peer"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-peer
+spec:
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 15
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: "bgp"
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPAdvertisement
+metadata:
+  name: bgp-advertisements
+  labels:
+    advertise: bgp
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP # ( LoadBalancerIP | ExternalIP | ClusterIP )
+      selector:
+        matchExpressions:
+          - {key: traefik.io/external-lb, operator: Exists}
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: dev-core-lb-ip-pool
+spec:
+  blocks:
+    - start: "192.168.254.10"
+      stop: "192.168.254.30"
+  serviceSelector:
+    matchExpressions:
+      - {key: traefik.io/external-lb, operator: Exists}
+
+
+## Configure bgp on UDM with the following config file:
+# router bgp 65000
+#   bgp bestpath as-path multipath-relax
+#   no bgp ebgp-requires-policy
+#   bgp router-id 192.168.10.1
+#   neighbor dev-clus-core peer-group
+#   neighbor dev-clus-core remote-as external
+#   neighbor 192.168.10.21 peer-group dev-clus-core
+#   neighbor 192.168.10.22 peer-group dev-clus-core
+#   neighbor 192.168.10.23 peer-group dev-clus-core
+#   neighbor 192.168.10.31 peer-group dev-clus-core
+#   neighbor 192.168.10.32 peer-group dev-clus-core
+#   neighbor 192.168.10.33 peer-group dev-clus-core

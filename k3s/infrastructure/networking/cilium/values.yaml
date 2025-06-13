@@ -46,26 +46,23 @@ k8sClientRateLimit:
   qps: 20
   burst: 100
 
-l2announcements:
+# l2announcements:
+#   enabled: true
+
+bgpControlPlane:
   enabled: true
+  # announce:
+  #   loadbalancerIP: true
 
 externalIPs:
   enabled: true
 
 enableCiliumEndpointSlice: true
 
-# ipv4NativeRoutingCIDR: "10.42.0.0/16"
-# enableIPv4: true
-# enableIPv4Masquerade: true
-# enableIPMasqAgent: false
-# routingMode: native
-# tunnelMode: ""
-# autoDirectNodeRoutes: true
-
 loadBalancer:
   # https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#maglev-consistent-hashing
   algorithm: maglev
-  #mode: dsr
+  # mode: dsr
 
 gatewayAPI:
   enabled: true

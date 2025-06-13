@@ -101,8 +101,12 @@ service:
   enabled: true
   single: true
   type: LoadBalancer
+  labels:
+    traefik.io/external-lb: "true"
+    k8s.io/ingress-controller: "true"
   annotations:
-    io.cilium/lb-ipam-ips: "192.168.10.50"
+    io.cilium/lb-ipam-ips: "from-pool"   # This tells Cilium to assign from the pool
+#   io.cilium/lb-ipam-ips: "192.168.254.10"
   spec:
     externalTrafficPolicy: Local
 
