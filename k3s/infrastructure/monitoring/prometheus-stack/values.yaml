@@ -28,6 +28,9 @@ prometheus:
     # Disable the default ingress for prometheus
     ingress:
       enabled: false
+  service:
+    labels:
+      homelab/component: ui
 
 prometheusOperator:
   admissionWebhooks:
@@ -69,6 +72,9 @@ alertmanager:
         memory: 250Mi
     ingress:
       enabled: false
+  service:
+    labels:
+      homelab/component: ui
 
 grafana:
   enabled: true
@@ -87,6 +93,9 @@ grafana:
     limits:
       cpu: 300m
       memory: 300Mi
+  service:
+    labels:
+      homelab/component: ui
   # Add a more patient readiness probe to prevent the sidecar race condition
   readinessProbe:
     initialDelaySeconds: 60
